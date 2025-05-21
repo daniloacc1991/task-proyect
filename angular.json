@@ -2,6 +2,13 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
+  "cli": {
+    "packageManager": "pnpm",
+    "analytics": "0d6a0be6-7a28-4824-9af2-51d0ad389c4c",
+    "schematicCollections": [
+      "angular-eslint"
+    ]
+  },
   "projects": {
     "angular-ngrx": {
       "projectType": "application",
@@ -98,6 +105,15 @@
               "src/styles.css"
             ],
             "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
+            ]
           }
         }
       }
