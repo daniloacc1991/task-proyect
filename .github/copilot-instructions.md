@@ -6,8 +6,9 @@ Este proyecto es una aplicación de gestión de tareas desarrollada con Angular 
 
 - **Framework**: Angular 19
 - **Estado global**: NgRx (Store, Effects, Actions, Reducers, Selectors)
-- **Estilos**: TailwindCSS
+- **Estilos**: TailwindCSS 4
 - **Lenguaje**: TypeScript
+- **NodeJS**: 22+
 
 ## Estructura del proyecto
 
@@ -55,3 +56,10 @@ src/
 - Marcar tarea como completada.
 - Eliminar tarea.
 - Guardar tareas en memoria (sin backend por ahora).
+
+## 📚 Recursos de documentación
+
+- [Documentación oficial de NgRx](https://ngrx.io/)
+- [Guía de NgRx Store](https://ngrx.io/guide/store)
+- [Guía de NgRx Effects](https://ngrx.io/guide/effects)
+- [Guía de NgRx Entity](https://ngrx.io/guide/entity)

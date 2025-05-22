@@ -1,0 +1,153 @@
+<div class="container mx-auto p-4">
+  <h1 class="text-3xl font-bold text-gray-800 mb-6">Task Manager</h1>
+
+  <!-- Task Form -->
+  <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <h2 class="text-xl font-semibold mb-4">Add New Task</h2>
+    <form (ngSubmit)="addTask()" [formGroup]="taskForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700" for="title"
+          >Title</label
+        >
+        <input
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          formControlName="title"
+          id="title"
+          placeholder="Enter task title"
+          type="text"
+        />
+
+        <div
+          *ngIf="
+            taskForm.get('title')?.invalid && taskForm.get('title')?.touched
+          "
+          class="text-red-500 text-sm mt-1"
+        >
+          Title is required and must be at least 3 characters.
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700" for="description"
+          >Description</label
+        >
+        <textarea
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          formControlName="description"
+          id="description"
+          placeholder="Enter task description (optional)"
+          rows="3"
+        ></textarea>
+      </div>
+
+      <button
+        [disabled]="taskForm.invalid"
+        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+        type="submit"
+      >
+        Add Task
+      </button>
+    </form>
+  </div>
+
+  <!-- Task Stats -->
+  <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold">Task Progress</h2>
+      <span class="text-sm text-gray-500">
+        <ng-container *ngIf="completedTasksCount$ | async as completedCount">
+          <ng-container *ngIf="(tasks$ | async)?.length as totalCount">
+            {{ completedCount }} / {{ totalCount }} completed
+          </ng-container>
+        </ng-container>
+      </span>
+    </div>
+    <div class="w-full bg-gray-200 rounded-full h-2.5">
+      <div
+        [style.width.%]="completionPercentage$ | async"
+        class="bg-indigo-600 h-2.5 rounded-full"
+      ></div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading$ | async" class="flex justify-center my-4">
+    <div
+      class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500"
+    ></div>
+  </div>
+
+  <!-- Error State -->
+  <div
+    *ngIf="error$ | async as error"
+    class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6"
+    role="alert"
+  >
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Task List -->
+  <div
+    *ngIf="(loading$ | async) === false && (tasks$ | async)?.length === 0"
+    class="text-center py-8 text-gray-500"
+  >
+    No tasks found. Add a new task to get started!
+  </div>
+
+  <div
+    *ngIf="(tasks$ | async)?.length"
+    class="bg-white shadow-md rounded-lg overflow-hidden"
+  >
+    <h2 class="text-xl font-semibold p-6 border-b">Task List</h2>
+    <ul class="divide-y divide-gray-200">
+      <li
+        *ngFor="let task of tasks$ | async"
+        class="p-6 hover:bg-gray-50 transition-colors duration-150"
+      >
+        <div class="flex items-start justify-between">
+          <div class="flex items-start space-x-4">
+            <input
+              (change)="toggleCompletion(task.id)"
+              [checked]="task.completed"
+              class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded mt-1"
+              type="checkbox"
+            />
+            <div>
+              <h3
+                [class.line-through]="task.completed"
+                [class.text-gray-500]="task.completed"
+                class="text-lg font-medium"
+              >
+                {{ task.title }}
+              </h3>
+              <p *ngIf="task.description" class="text-gray-600 mt-1">
+                {{ task.description }}
+              </p>
+              <p class="text-xs text-gray-400 mt-2">
+                Created: {{ task.createdAt | date: 'medium' }}
+              </p>
+            </div>
+          </div>
+          <button
+            (click)="deleteTask(task.id)"
+            aria-label="Delete task"
+            class="text-red-500 hover:text-red-700 focus:outline-none"
+          >
+            <svg
+              class="h-5 w-5"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                clip-rule="evenodd"
+                d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
