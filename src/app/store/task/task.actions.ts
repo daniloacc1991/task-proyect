@@ -17,7 +17,7 @@ export const loadTasksFailure = createAction(
 // Add Task
 export const addTask = createAction(
   '[Tasks] Add Task',
-  props<{ task: Omit<Task, 'id' | 'createdAt'> }>(),
+  props<{ task: Omit<Task, 'id' | 'createdAt' | 'loading'> }>(),
 );
 
 export const addTaskSuccess = createAction(
@@ -43,7 +43,7 @@ export const updateTaskSuccess = createAction(
 
 export const updateTaskFailure = createAction(
   '[Tasks] Update Task Failure',
-  props<{ error: string }>(),
+  props<{ error: string; task: Task }>(),
 );
 
 // Delete Task
@@ -59,7 +59,7 @@ export const deleteTaskSuccess = createAction(
 
 export const deleteTaskFailure = createAction(
   '[Tasks] Delete Task Failure',
-  props<{ error: string }>(),
+  props<{ id: string; error: string }>(),
 );
 
 // Toggle Task Completion

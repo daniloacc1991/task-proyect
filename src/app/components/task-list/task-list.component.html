@@ -107,7 +107,7 @@
         <div class="flex items-start justify-between">
           <div class="flex items-start space-x-4">
             <input
-              (change)="toggleCompletion(task.id)"
+              (change)="toggleCompletion(task)"
               [checked]="task.completed"
               class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded mt-1"
               type="checkbox"
@@ -130,6 +130,7 @@
           </div>
           <button
             (click)="deleteTask(task.id)"
+            *ngIf="!task.loading"
             aria-label="Delete task"
             class="text-red-500 hover:text-red-700 focus:outline-none"
           >
@@ -146,6 +147,11 @@
               />
             </svg>
           </button>
+          <div *ngIf="task.loading" class="flex justify-center my-4">
+            <div
+              class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-500"
+            ></div>
+          </div>
         </div>
       </li>
     </ul>

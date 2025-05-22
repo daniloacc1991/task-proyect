@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { AppState } from '../../store/app.state';
+import { AppState } from '../../store';
 import { Task } from '../../models/task.model';
 import * as TaskActions from '../../store/task/task.actions';
 import * as TaskSelectors from '../../store/task/task.selectors';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-task-list',
@@ -60,14 +61,26 @@ export class TaskListComponent implements OnInit {
     }
   }
 
-  toggleCompletion(id: string): void {
-    this.store.dispatch(TaskActions.toggleTaskCompletion({ id }));
+  toggleCompletion(task: Task): void {
+    this.store.dispatch(
+      TaskActions.updateTask({ task: { ...task, completed: !task.completed } }),
+    );
   }
 
   deleteTask(id: string): void {
-    if (confirm('Are you sure you want to delete this task?')) {
-      this.store.dispatch(TaskActions.deleteTask({ id }));
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to delete this task?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+    }).then(result => {
+      if (result.isConfirmed) {
+        this.store.dispatch(TaskActions.deleteTask({ id }));
+        Swal.fire('Deleted!', 'The task has been deleted.', 'success');
+      }
+    });
   }
 
   updateTask(task: Task): void {

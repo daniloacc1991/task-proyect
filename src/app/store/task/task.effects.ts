@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { of } from 'rxjs';
+import { delay, of } from 'rxjs';
 import { map, mergeMap, switchMap } from 'rxjs/operators';
 import * as TaskActions from './task.actions';
 import { Task } from '../../models/task.model';
@@ -37,6 +37,7 @@ export class TaskEffects {
           const newTask: Task = {
             ...task,
             id: uuidV4(),
+            loading: false,
             createdAt: new Date(),
           };
 
@@ -54,13 +55,17 @@ export class TaskEffects {
   updateTask$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TaskActions.updateTask),
+      delay(6000),
       mergeMap(({ task }) => {
         try {
           // Simulate updating task
           return of(TaskActions.updateTaskSuccess({ task }));
         } catch (_error) {
           return of(
-            TaskActions.updateTaskFailure({ error: 'Failed to update task' }),
+            TaskActions.updateTaskFailure({
+              task,
+              error: 'Failed to update task',
+            }),
           );
         }
       }),
@@ -70,13 +75,17 @@ export class TaskEffects {
   deleteTask$ = createEffect(() =>
     this.actions$.pipe(
       ofType(TaskActions.deleteTask),
+      delay(6000),
       mergeMap(({ id }) => {
         try {
           // Simulate deleting task
           return of(TaskActions.deleteTaskSuccess({ id }));
         } catch (_error) {
           return of(
-            TaskActions.deleteTaskFailure({ error: 'Failed to delete task' }),
+            TaskActions.deleteTaskFailure({
+              id,
+              error: 'Failed to delete task',
+            }),
           );
         }
       }),

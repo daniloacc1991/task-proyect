@@ -45,45 +45,42 @@ export const taskReducer = createReducer(
   })),
 
   // Update Task
-  on(TaskActions.updateTask, state => ({
-    ...state,
-    loading: true,
-  })),
-
-  on(TaskActions.updateTaskSuccess, (state, { task }) =>
+  on(TaskActions.updateTask, (state, { task }) =>
     taskAdapter.updateOne(
-      { id: task.id, changes: task },
-      {
-        ...state,
-        loading: false,
-      },
+      { id: task.id, changes: { loading: true } },
+      { ...state },
     ),
   ),
 
-  on(TaskActions.updateTaskFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error,
-  })),
-
-  // Delete Task
-  on(TaskActions.deleteTask, state => ({
-    ...state,
-    loading: true,
-  })),
-
-  on(TaskActions.deleteTaskSuccess, (state, { id }) =>
-    taskAdapter.removeOne(id, {
-      ...state,
-      loading: false,
-    }),
+  on(TaskActions.updateTaskSuccess, (state, { task }) =>
+    taskAdapter.updateOne(
+      { id: task.id, changes: { ...task, loading: false } },
+      { ...state },
+    ),
   ),
 
-  on(TaskActions.deleteTaskFailure, (state, { error }) => ({
-    ...state,
-    loading: false,
-    error,
-  })),
+  on(TaskActions.updateTaskFailure, (state, { task, error }) =>
+    taskAdapter.updateOne(
+      { id: task.id, changes: { loading: false } },
+      { ...state, error },
+    ),
+  ),
+
+  // Delete Task
+  on(TaskActions.deleteTask, (state, { id }) =>
+    taskAdapter.updateOne({ id, changes: { loading: true } }, { ...state }),
+  ),
+
+  on(TaskActions.deleteTaskSuccess, (state, { id }) =>
+    taskAdapter.removeOne(id, { ...state }),
+  ),
+
+  on(TaskActions.deleteTaskFailure, (state, { id, error }) =>
+    taskAdapter.updateOne(
+      { id, changes: { loading: false } },
+      { ...state, error },
+    ),
+  ),
 
   // Toggle Task Completion
   on(TaskActions.toggleTaskCompletion, (state, { id }) => {
